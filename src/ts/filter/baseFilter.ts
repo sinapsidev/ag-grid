@@ -20,7 +20,9 @@ const DEFAULT_TRANSLATIONS : {[name:string]:string}= {
     equals:'Equals',
     notEqual:'Not equal',
     lessThan:'Less than',
+    lessThanToday:'Less than today',
     greaterThan:'Greater than',
+    greaterThanToday:'Greater than today',
     inRange:'In range',
     lessThanOrEqual:'Less than or equals',
     greaterThanOrEqual:'Greater than or equals',
@@ -48,8 +50,10 @@ export abstract class BaseFilter<T, P extends IFilterParams, M> extends Componen
     public static EQUALS = 'equals';
     public static NOT_EQUAL = 'notEqual';
     public static LESS_THAN = 'lessThan';
+    public static LESS_THAN_TODAY = 'lessThanToday';
     public static LESS_THAN_OR_EQUAL = 'lessThanOrEqual';
     public static GREATER_THAN = 'greaterThan';
+    public static GREATER_THAN_TODAY = 'greaterThanToday';
     public static GREATER_THAN_OR_EQUAL = 'greaterThanOrEqual';
     public static IN_RANGE = 'inRange';
 
@@ -294,6 +298,10 @@ export abstract class ComparableBaseFilter<T, P extends IFilterParams, M> extend
         if (this.filter === BaseFilter.IN_RANGE) {
             let filterValueArray = (<T[]>rawFilterValues);
             return filterValueArray[0] != null && filterValueArray[1] != null;
+        } else if (this.filter === BaseFilter.GREATER_THAN_TODAY) {
+            return true;
+        } else if (this.filter === BaseFilter.LESS_THAN_TODAY) {
+            return true; 
         } else {
             return rawFilterValues != null;
         }
@@ -342,6 +350,10 @@ export abstract class ScalarBaseFilter<T, P extends IScalarFilterParams, M> exte
                     return nullValue? 1 : -1;
                 }
 
+                if (this.filter === BaseFilter.GREATER_THAN_TODAY){
+                    return nullValue? 1 : 1;
+                }
+
                 if (this.filter === BaseFilter.GREATER_THAN_OR_EQUAL){
                     return nullValue? 1 : -1;
                 }
@@ -351,6 +363,10 @@ export abstract class ScalarBaseFilter<T, P extends IScalarFilterParams, M> exte
                 }
 
                 if (this.filter === BaseFilter.LESS_THAN){
+                    return nullValue? -1 : 1;
+                }
+
+                if (this.filter === BaseFilter.LESS_THAN_TODAY){
                     return nullValue? -1 : 1;
                 }
 
@@ -394,8 +410,12 @@ export abstract class ScalarBaseFilter<T, P extends IScalarFilterParams, M> exte
         if (this.filter === BaseFilter.EQUALS){
             return compareResult === 0;
         }
-
+        
         if (this.filter === BaseFilter.GREATER_THAN){
+            return compareResult > 0;
+        }
+
+        if (this.filter === BaseFilter.GREATER_THAN_TODAY){
             return compareResult > 0;
         }
 
@@ -408,6 +428,10 @@ export abstract class ScalarBaseFilter<T, P extends IScalarFilterParams, M> exte
         }
 
         if (this.filter === BaseFilter.LESS_THAN){
+            return compareResult < 0;
+        }
+
+        if (this.filter === BaseFilter.LESS_THAN_TODAY){
             return compareResult < 0;
         }
 

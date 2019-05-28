@@ -48,7 +48,7 @@ export class DateFilter extends ScalarBaseFilter<Date, IDateFilterParams, Serial
     }
 
     public getApplicableFilterTypes ():string[]{
-        return [BaseFilter.EQUALS, BaseFilter.GREATER_THAN, BaseFilter.LESS_THAN, BaseFilter.NOT_EQUAL, BaseFilter.IN_RANGE];
+        return [BaseFilter.EQUALS, BaseFilter.GREATER_THAN_TODAY, BaseFilter.GREATER_THAN, BaseFilter.LESS_THAN, BaseFilter.LESS_THAN_TODAY, BaseFilter.NOT_EQUAL, BaseFilter.IN_RANGE];
     }
 
 
@@ -95,7 +95,10 @@ export class DateFilter extends ScalarBaseFilter<Date, IDateFilterParams, Serial
     }
 
     public refreshFilterBodyUi(): void {
+        let visibleFrom = this.filter !== BaseFilter.GREATER_THAN_TODAY && this.filter !== BaseFilter.LESS_THAN_TODAY;
         let visible = this.filter === BaseFilter.IN_RANGE;
+        visible = (this.filter === BaseFilter.GREATER_THAN_TODAY || this.filter === BaseFilter.LESS_THAN_TODAY) ? false : visible;
+        Utils.setVisible(this.eDateFromPanel, visibleFrom);
         Utils.setVisible(this.eDateToPanel, visible);
     }
 
@@ -121,9 +124,20 @@ export class DateFilter extends ScalarBaseFilter<Date, IDateFilterParams, Serial
     }
 
     public filterValues ():Date|Date[] {
-        return this.filter !== BaseFilter.IN_RANGE ?
-            this.dateFromComponent.getDate() :
-            [this.dateFromComponent.getDate(), this.dateToComponent.getDate()];
+        let toReturn;
+        if (this.filter === BaseFilter.IN_RANGE) {
+            toReturn = [this.dateFromComponent.getDate(), this.dateToComponent.getDate()]
+            return toReturn;
+        }
+
+        if (this.filter === BaseFilter.GREATER_THAN_TODAY || this.filter === BaseFilter.LESS_THAN_TODAY) {
+            toReturn  = new Date();
+            toReturn.setHours(0,0,0,0);
+            return toReturn;
+        }
+        
+        toReturn = this.dateFromComponent.getDate();
+        return toReturn;
     }
 
     // not used by ag-Grid, but exposed as part of the filter API for the client if they want it
