@@ -44,6 +44,15 @@ export class TextFilter extends ComparableBaseFilter <string, ITextFilterParams,
         switch (filter) {
         case TextFilter.CONTAINS:
             return value.indexOf(filterText) >= 0;
+        case TextFilter.CUSTOM:
+            var passed = true;
+            filterText.split(" ").forEach(function(filterWord) {
+                if (value.indexOf(filterWord)<0) {
+                    passed = false;
+                }
+            });
+        
+            return passed;
         case TextFilter.NOT_CONTAINS:
             return value.indexOf(filterText) === -1;
         case TextFilter.EQUALS:
@@ -85,7 +94,7 @@ export class TextFilter extends ComparableBaseFilter <string, ITextFilterParams,
     }
 
     public getApplicableFilterTypes ():string[]{
-        return [BaseFilter.EQUALS, BaseFilter.NOT_EQUAL, BaseFilter.STARTS_WITH, BaseFilter.ENDS_WITH,
+        return [BaseFilter.EQUALS, BaseFilter.CUSTOM, BaseFilter.NOT_EQUAL, BaseFilter.STARTS_WITH, BaseFilter.ENDS_WITH,
             BaseFilter.CONTAINS, BaseFilter.NOT_CONTAINS];
     }
 

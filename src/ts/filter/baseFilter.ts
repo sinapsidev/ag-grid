@@ -18,6 +18,7 @@ export interface Comparator<T>{
 const DEFAULT_TRANSLATIONS : {[name:string]:string}= {
     loadingOoo:'Loading...',
     equals:'Equals',
+    custom:'Custom',
     notEqual:'Not equal',
     lessThan:'Less than',
     lessThanToday:'Less than today',
@@ -49,6 +50,7 @@ const DEFAULT_TRANSLATIONS : {[name:string]:string}= {
 export abstract class BaseFilter<T, P extends IFilterParams, M> extends Component implements IFilterComp {
     public static EQUALS = 'equals';
     public static NOT_EQUAL = 'notEqual';
+    public static CUSTOM = 'custom';
     public static LESS_THAN = 'lessThan';
     public static LESS_THAN_TODAY = 'lessThanToday';
     public static LESS_THAN_OR_EQUAL = 'lessThanOrEqual';
@@ -346,6 +348,10 @@ export abstract class ScalarBaseFilter<T, P extends IScalarFilterParams, M> exte
                     return nullValue? 0 : 1;
                 }
 
+                if (this.filter === BaseFilter.CUSTOM){
+                    return nullValue? 0 : 1;
+                }
+
                 if (this.filter === BaseFilter.GREATER_THAN){
                     return nullValue? 1 : -1;
                 }
@@ -408,6 +414,10 @@ export abstract class ScalarBaseFilter<T, P extends IScalarFilterParams, M> exte
         let compareResult = comparator(from, value);
 
         if (this.filter === BaseFilter.EQUALS){
+            return compareResult === 0;
+        }
+
+        if (this.filter === BaseFilter.CUSTOM){
             return compareResult === 0;
         }
         
