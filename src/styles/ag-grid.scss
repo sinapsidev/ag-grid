@@ -827,3 +827,36 @@ $row-group-indent-size: 10px !default;
     .ag-ltr .ag-row-group-indent-#{$i} { padding-left: $i * $row-group-indent-size; }
     .ag-rtl .ag-row-group-indent-#{$i} { padding-right: $i * $row-group-indent-size; }
 }
+
+.ag-show-date {
+    #ag-filter-greather-than-today {
+        display: none;
+    }
+    #ag-filter-less-than-today {
+        display: none;
+    }
+    input[type=date] {
+    }
+}
+
+.ag-show-greater-than-today {
+    #ag-filter-greather-than-today {
+    }
+    #ag-filter-less-than-today {
+        display: none;
+    }
+    input[type=date] {
+        display: none;
+    }
+}
+
+.ag-show-less-than-today {
+    #ag-filter-greather-than-today {
+        display: none;
+    }
+    #ag-filter-less-than-today {
+    }
+    input[type=date] {
+        display: none;
+    }
+}

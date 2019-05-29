@@ -47,6 +47,7 @@ export declare class TextFloatingFilterComp extends InputTextFloatingFilterComp<
 export declare class DateFloatingFilterComp extends Component implements IFloatingFilter<SerializedDateFilter, BaseFloatingFilterChange<SerializedDateFilter>, IFloatingFilterParams<SerializedDateFilter, BaseFloatingFilterChange<SerializedDateFilter>>> {
     private componentRecipes;
     private dateComponentPromise;
+    private body;
     onFloatingFilterChanged: (change: BaseFloatingFilterChange<SerializedDateFilter>) => void;
     currentParentModel: () => SerializedDateFilter;
     lastKnownModel: SerializedDateFilter;

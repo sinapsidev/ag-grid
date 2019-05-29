@@ -138,13 +138,17 @@ export class DateFloatingFilterComp extends Component implements IFloatingFilter
     @Autowired('componentRecipes')
     private componentRecipes: ComponentRecipes;
     private dateComponentPromise: Promise<IDateComp>;
+    private body: HTMLElement;
 
     onFloatingFilterChanged: (change: BaseFloatingFilterChange<SerializedDateFilter>) => void;
     currentParentModel: () => SerializedDateFilter;
     lastKnownModel: SerializedDateFilter = null;
 
     init(params: IFloatingFilterParams<SerializedDateFilter, BaseFloatingFilterChange<SerializedDateFilter>>) {
-        this.onFloatingFilterChanged = params.onFloatingFilterChanged;
+        this.onFloatingFilterChanged = (p) => {
+            console.log("onFloatingFilterChanged", p);
+            params.onFloatingFilterChanged(p);
+        };
         this.currentParentModel = params.currentParentModel;
         let debounceMs: number = params.debounceMs != null ? params.debounceMs : 500;
         let toDebounce: () => void = _.debounce(this.onDateChanged.bind(this), debounceMs);
@@ -153,11 +157,14 @@ export class DateFloatingFilterComp extends Component implements IFloatingFilter
         };
         this.dateComponentPromise = this.componentRecipes.newDateComponent(dateComponentParams);
 
-        let body: HTMLElement = _.loadTemplate(`<div></div>`);
+        this.body = _.loadTemplate('<div class="ag-show-date">' + 
+                                   '    <span id="ag-filter-greather-than-today">Da oggi</span>' +
+                                   '    <span id="ag-filter-less-than-today">Fino ad oggi</span>' +
+                                   '</div>');
         this.dateComponentPromise.then(dateComponent=>{
-            body.appendChild(dateComponent.getGui());
+            this.body.appendChild(dateComponent.getGui());
         });
-        this.setTemplateFromElement(body);
+        this.setTemplateFromElement(this.body);
     }
 
     private onDateChanged(): void {
@@ -205,6 +212,21 @@ export class DateFloatingFilterComp extends Component implements IFloatingFilter
 
 
     onParentModelChanged(parentModel: SerializedDateFilter): void {
+        console.log("onParentModelChanged: ", parentModel);
+        const type = parentModel && parentModel.type;
+        if (type === "greaterThanToday") {
+            this.body.classList.remove("ag-show-date");
+            this.body.classList.add("ag-show-greater-than-today");
+            this.body.classList.remove("ag-show-less-than-today");
+        } else if (type === "lessThanToday") {
+            this.body.classList.remove("ag-show-date");
+            this.body.classList.remove("ag-show-greater-than-today");
+            this.body.classList.add("ag-show-less-than-today");
+        } else {
+            this.body.classList.add("ag-show-date");
+            this.body.classList.remove("ag-show-greater-than-today");
+            this.body.classList.remove("ag-show-less-than-today");
+        }
         this.lastKnownModel = parentModel;
         this.dateComponentPromise.then(dateComponent=>{
             if (!parentModel || !parentModel.dateFrom) {

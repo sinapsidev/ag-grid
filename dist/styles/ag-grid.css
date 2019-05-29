@@ -1757,3 +1757,21 @@ ag-grid-aurelia {
 
 .ag-rtl .ag-row-group-indent-49 {
   padding-right: 490px; }
+
+.ag-show-date #ag-filter-greather-than-today {
+  display: none; }
+
+.ag-show-date #ag-filter-less-than-today {
+  display: none; }
+
+.ag-show-greater-than-today #ag-filter-less-than-today {
+  display: none; }
+
+.ag-show-greater-than-today input[type=date] {
+  display: none; }
+
+.ag-show-less-than-today #ag-filter-greather-than-today {
+  display: none; }
+
+.ag-show-less-than-today input[type=date] {
+  display: none; }
