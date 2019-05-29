@@ -45,7 +45,7 @@ var DateFilter = (function (_super) {
         };
     };
     DateFilter.prototype.getApplicableFilterTypes = function () {
-        return [baseFilter_1.BaseFilter.EQUALS, baseFilter_1.BaseFilter.GREATER_THAN, baseFilter_1.BaseFilter.LESS_THAN, baseFilter_1.BaseFilter.NOT_EQUAL, baseFilter_1.BaseFilter.IN_RANGE];
+        return [baseFilter_1.BaseFilter.EQUALS, baseFilter_1.BaseFilter.GREATER_THAN_TODAY, baseFilter_1.BaseFilter.GREATER_THAN, baseFilter_1.BaseFilter.LESS_THAN, baseFilter_1.BaseFilter.LESS_THAN_TODAY, baseFilter_1.BaseFilter.NOT_EQUAL, baseFilter_1.BaseFilter.IN_RANGE];
     };
     DateFilter.prototype.bodyTemplate = function () {
         return "<div class=\"ag-filter-body\">\n                    <div class=\"ag-filter-date-from\" id=\"filterDateFromPanel\">\n                    </div>\n                    <div class=\"ag-filter-date-to\" id=\"filterDateToPanel\">\n                    </div>\n                </div>";
@@ -79,7 +79,10 @@ var DateFilter = (function (_super) {
         this.onFilterChanged();
     };
     DateFilter.prototype.refreshFilterBodyUi = function () {
+        var visibleFrom = this.filter !== baseFilter_1.BaseFilter.GREATER_THAN_TODAY && this.filter !== baseFilter_1.BaseFilter.LESS_THAN_TODAY;
         var visible = this.filter === baseFilter_1.BaseFilter.IN_RANGE;
+        visible = (this.filter === baseFilter_1.BaseFilter.GREATER_THAN_TODAY || this.filter === baseFilter_1.BaseFilter.LESS_THAN_TODAY) ? false : visible;
+        utils_1.Utils.setVisible(this.eDateFromPanel, visibleFrom);
         utils_1.Utils.setVisible(this.eDateToPanel, visible);
     };
     DateFilter.prototype.comparator = function () {
@@ -105,9 +108,18 @@ var DateFilter = (function (_super) {
         };
     };
     DateFilter.prototype.filterValues = function () {
-        return this.filter !== baseFilter_1.BaseFilter.IN_RANGE ?
-            this.dateFromComponent.getDate() :
-            [this.dateFromComponent.getDate(), this.dateToComponent.getDate()];
+        var toReturn;
+        if (this.filter === baseFilter_1.BaseFilter.IN_RANGE) {
+            toReturn = [this.dateFromComponent.getDate(), this.dateToComponent.getDate()];
+            return toReturn;
+        }
+        if (this.filter === baseFilter_1.BaseFilter.GREATER_THAN_TODAY || this.filter === baseFilter_1.BaseFilter.LESS_THAN_TODAY) {
+            toReturn = new Date();
+            toReturn.setHours(0, 0, 0, 0);
+            return toReturn;
+        }
+        toReturn = this.dateFromComponent.getDate();
+        return toReturn;
     };
     // not used by ag-Grid, but exposed as part of the filter API for the client if they want it
     DateFilter.prototype.getDateFrom = function () {

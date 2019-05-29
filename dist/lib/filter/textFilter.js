@@ -52,7 +52,7 @@ var TextFilter = (function (_super) {
         };
     };
     TextFilter.prototype.getApplicableFilterTypes = function () {
-        return [baseFilter_1.BaseFilter.EQUALS, baseFilter_1.BaseFilter.NOT_EQUAL, baseFilter_1.BaseFilter.STARTS_WITH, baseFilter_1.BaseFilter.ENDS_WITH,
+        return [baseFilter_1.BaseFilter.EQUALS, baseFilter_1.BaseFilter.CUSTOM, baseFilter_1.BaseFilter.NOT_EQUAL, baseFilter_1.BaseFilter.STARTS_WITH, baseFilter_1.BaseFilter.ENDS_WITH,
             baseFilter_1.BaseFilter.CONTAINS, baseFilter_1.BaseFilter.NOT_CONTAINS];
     };
     TextFilter.prototype.bodyTemplate = function () {
@@ -153,6 +153,14 @@ var TextFilter = (function (_super) {
         switch (filter) {
             case TextFilter.CONTAINS:
                 return value.indexOf(filterText) >= 0;
+            case TextFilter.CUSTOM:
+                var passed = true;
+                filterText.split(" ").forEach(function (filterWord) {
+                    if (value.indexOf(filterWord) < 0) {
+                        passed = false;
+                    }
+                });
+                return passed;
             case TextFilter.NOT_CONTAINS:
                 return value.indexOf(filterText) === -1;
             case TextFilter.EQUALS:

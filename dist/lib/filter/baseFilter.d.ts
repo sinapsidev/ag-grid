@@ -22,9 +22,12 @@ export interface Comparator<T> {
 export declare abstract class BaseFilter<T, P extends IFilterParams, M> extends Component implements IFilterComp {
     static EQUALS: string;
     static NOT_EQUAL: string;
+    static CUSTOM: string;
     static LESS_THAN: string;
+    static LESS_THAN_TODAY: string;
     static LESS_THAN_OR_EQUAL: string;
     static GREATER_THAN: string;
+    static GREATER_THAN_TODAY: string;
     static GREATER_THAN_OR_EQUAL: string;
     static IN_RANGE: string;
     static CONTAINS: string;
